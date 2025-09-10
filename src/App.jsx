@@ -15,6 +15,8 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 // Pages
 import Dashboard from './pages/Dashboard';
 import SDTZone from './pages/SDTZone';
+import Users from './pages/Users';
+import CreateUser from './pages/CreateUser';
 import Customers from './pages/Customers';
 import Billing from './pages/Billing';
 import Network from './pages/Network';
@@ -125,6 +127,22 @@ function App() {
                 </ProtectedRoute>
               } />
 
+              <Route path="/users" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Users />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+
+              <Route path="/users/create" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateUser />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+
               <Route path="/customers" element={
                 <ProtectedRoute>
                   <Layout>
@@ -165,8 +183,8 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              {/* Redirect unknown routes to dashboard */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              {/* Redirect unknown routes */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             
             {/* Toast notifications */}

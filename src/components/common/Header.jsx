@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { createPortal } from 'react-dom';
 import {
   Bell,
   Settings,
@@ -8,7 +9,9 @@ import {
   Shield,
   Sparkles,
   Sun,
-  Moon
+  Moon,
+  User,
+  Key
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
@@ -43,18 +46,39 @@ const ThemeToggle = () => {
 };
 
 const Header = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { logout } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [onlineUsers] = useState(1247);
+  const userMenuRef = useRef(null);
+  const notificationsRef = useRef(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Handle click outside for user menu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setShowUserMenu(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    if (showUserMenu || showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu, showNotifications]);
 
   const handleLogout = async () => {
     await logout();
@@ -106,8 +130,8 @@ const Header = () => {
           <ThemeToggle />
           
           {/* Notifications */}
-          <div className="relative">
-            <button 
+          <div className="relative" ref={notificationsRef}>
+            <button
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative p-3 backdrop-blur-md bg-white/10 light:bg-gray-200/50 border border-white/20 light:border-gray-300/50 rounded-2xl hover:bg-white/20 light:hover:bg-gray-300/50 transition-all duration-300 shadow-xl group"
             >
@@ -140,7 +164,7 @@ const Header = () => {
           </div>
           
           {/* User Menu */}
-          <div className="relative">
+          <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center space-x-3 backdrop-blur-md bg-white/10 light:bg-gray-200/50 border border-white/20 light:border-gray-300/50 px-4 py-3 rounded-2xl shadow-xl hover:bg-white/20 light:hover:bg-gray-300/50 transition-all duration-300"
@@ -150,45 +174,43 @@ const Header = () => {
               </div>
               <div className="text-left">
                 <span className="text-white light:text-gray-900 font-semibold block">
-                  {user?.username || 'Administrator'}
+                  {user?.name || user?.login_id || 'Administrator'}
                 </span>
-                <p className="text-xs text-white/60 light:text-gray-600">Super User</p>
+                <p className="text-xs text-white/60 light:text-gray-600">
+                  {user?.user_type ? user.user_type.charAt(0).toUpperCase() + user.user_type.slice(1) : 'User'}
+                  {user?.designation && ` • ${user.designation}`}
+                  {user?.employee_id && ` (${user.employee_id})`}
+                </p>
               </div>
               <ChevronDown className="w-4 h-4 text-white/60 light:text-gray-500" />
             </button>
 
             {/* User Dropdown */}
-            {showUserMenu && (
-              <div className="absolute right-0 top-full mt-2 w-64 backdrop-blur-xl bg-white/10 light:bg-white/90 border border-white/20 light:border-gray-200 rounded-2xl shadow-2xl p-4 z-50">
-                <div className="space-y-2">
-                  <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-white/10 light:hover:bg-gray-100 rounded-xl transition-colors">
-                    <Settings className="w-4 h-4 text-white/70 light:text-gray-600" />
-                    <span className="text-white light:text-gray-800">Account Settings</span>
-                  </button>
-                  <button 
-                    onClick={handleLogout}
-                    className="w-full flex items-center space-x-3 p-3 text-left hover:bg-red-500/20 light:hover:bg-red-50 rounded-xl transition-colors text-red-300 light:text-red-600"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
-                  </button>
+            {showUserMenu && createPortal(
+              <div className="fixed inset-0 z-[9999] flex items-start justify-end pt-20 pr-6">
+                <div className="w-64 backdrop-blur-xl bg-white/10 light:bg-white/90 border border-white/20 light:border-gray-200 rounded-2xl shadow-2xl p-4">
+                  <div className="space-y-2">
+                    <button className="w-full flex items-center space-x-3 p-3 text-left hover:bg-white/10 light:hover:bg-gray-100 rounded-xl transition-colors">
+                      <Settings className="w-4 h-4 text-white/70 light:text-gray-600" />
+                      <span className="text-white light:text-gray-800">Account Settings</span>
+                    </button>
+                    <div
+                      onClick={handleLogout}
+                      className="w-full flex items-center space-x-3 p-3 text-left hover:bg-red-500/20 light:hover:bg-red-50 rounded-xl transition-colors text-red-300 light:text-red-600 cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </div>,
+              document.body
             )}
           </div>
         </div>
       </div>
 
-      {/* Click outside handlers */}
-      {(showNotifications || showUserMenu) && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => {
-            setShowNotifications(false);
-            setShowUserMenu(false);
-          }}
-        />
-      )}
+
     </div>
   );
 };

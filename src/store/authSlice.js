@@ -7,6 +7,8 @@ const initialState = {
   isAuthenticated: !!localStorage.getItem('authToken'),
   loading: false,
   error: null,
+  expiresAt: null,
+  rememberMe: localStorage.getItem('rememberMe') === 'true',
 };
 
 const authSlice = createSlice({
@@ -23,8 +25,13 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.access;
       state.refreshToken = action.payload.refresh;
+      state.expiresAt = action.payload.expires_at;
+      state.rememberMe = action.payload.remember_me || false;
       localStorage.setItem('authToken', action.payload.access);
       localStorage.setItem('refreshToken', action.payload.refresh);
+      if (action.payload.remember_me) {
+        localStorage.setItem('rememberMe', 'true');
+      }
     },
     loginFailure: (state, action) => {
       state.loading = false;
@@ -40,8 +47,11 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
+      state.expiresAt = null;
+      state.rememberMe = false;
       localStorage.removeItem('authToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('rememberMe');
     },
     clearError: (state) => {
       state.error = null;

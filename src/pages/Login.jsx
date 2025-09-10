@@ -30,7 +30,7 @@ const Login = () => {
       const result = await login({
         login_id: data.login_id,
         password: data.password,
-        remember_me: false,
+        remember_me: data.remember_me || false,
       });
 
       if (!result.success) {
@@ -154,6 +154,7 @@ const Login = () => {
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input
+                  {...register('remember_me')}
                   type="checkbox"
                   className="h-4 w-4 text-blue-500 focus:ring-blue-400 border-white/20 bg-white/10 rounded"
                 />

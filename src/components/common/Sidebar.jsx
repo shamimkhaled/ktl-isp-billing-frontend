@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Activity, 
-  MapPin, 
-  Users, 
-  DollarSign, 
-  Wifi, 
-  TrendingUp, 
+import {
+  Activity,
+  MapPin,
+  Users,
+  DollarSign,
+  Wifi,
+  TrendingUp,
   Settings,
+  UserCheck,
   ChevronDown,
   ChevronRight
 } from 'lucide-react';
@@ -39,12 +40,13 @@ const menuItems = [
       { label: 'Zone Summary', path: '/sdt-zone/summary' }
     ]
   },
-  { 
-    id: 'customers', 
-    label: 'Customers', 
-    icon: Users, 
+
+  {
+    id: 'customers',
+    label: 'Customers',
+    icon: Users,
     path: '/customers',
-    gradient: 'from-purple-400 to-pink-400' 
+    gradient: 'from-purple-400 to-pink-400'
   },
   { 
     id: 'billing', 
@@ -67,6 +69,20 @@ const menuItems = [
     path: '/reports',
     gradient: 'from-teal-400 to-blue-400' 
   },
+
+  {
+    id: 'users',
+    label: 'User Management',
+    icon: UserCheck,
+    path: '/users',
+    gradient: 'from-indigo-400 to-blue-400',
+    subItems: [
+      { label: 'All Users', path: '/users' },
+      { label: 'Create User', path: '/users/create' },
+      { label: 'Roles & Permissions', path: '/users/roles' },
+    ]
+  },
+
   { 
     id: 'settings', 
     label: 'Settings', 

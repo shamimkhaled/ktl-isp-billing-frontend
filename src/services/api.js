@@ -151,6 +151,43 @@ export const ENDPOINTS = {
     CUSTOMERS: '/reports/customers/',
     NETWORK: '/reports/network/',
     EXPORT: '/reports/export/',
+  },
+
+  // User Management
+  USERS: {
+    LIST: '/users/',
+    CREATE: '/users/',
+    DETAIL: (id) => `/users/${id}/`,
+    UPDATE: (id) => `/users/${id}/`,
+    DELETE: (id) => `/users/${id}/`,
+    PROFILE: '/users/profile/',
+    CHANGE_PASSWORD: '/users/change-password/',
+    PERMISSIONS: '/users/permissions/',
+  },
+
+  // Role Management
+  ROLES: {
+    LIST: '/roles/',
+    CREATE: '/roles/',
+    DETAIL: (id) => `/roles/${id}/`,
+    UPDATE: (id) => `/roles/${id}/`,
+    DELETE: (id) => `/roles/${id}/`,
+    ASSIGN: '/roles/assign/',
+    BULK_ASSIGN: '/roles/bulk-assign/',
+  },
+
+  // User Role Assignments
+  USER_ROLES: {
+    LIST: '/user-roles/',
+    DETAIL: (id) => `/user-roles/${id}/`,
+    UPDATE: (id) => `/user-roles/${id}/`,
+    DELETE: (id) => `/user-roles/${id}/`,
+  },
+
+  // Permissions
+  PERMISSIONS: {
+    LIST: '/permissions/',
+    DETAIL: (id) => `/permissions/${id}/`,
   }
 };
 

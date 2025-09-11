@@ -1,36 +1,47 @@
-# Authentication Integration Task
+# Remove Authorization Rules - Implementation Plan
+
+## Overview
+Remove all role-based authorization checks from the application to allow all users full access to all features.
 
 ## Tasks
-- [x] Update useAuth.js to handle login with tokens and user data
-- [x] Add refresh token functionality to useAuth.js
-- [x] Update logout to call API endpoint with refresh token
-- [x] Update Header.jsx to display dynamic user info (name, user_type, employee_id)
-- [x] Update authSlice.js to handle expires_at and remember_me
-- [x] Update Login.jsx to handle remember_me checkbox
-- [x] Add authentication services to auth.js
-- [x] Test the complete authentication flow
 
-# Authentication Integration Task
+### 1. Update userService.js - usePermissions hook
+- [x] Modify all permission functions to return `true` instead of checking user roles
+- [x] Remove role-based logic from `canCreateUsers`, `canEditUsers`, `canDeleteUsers`, `canViewUsers`, `canAccessUserManagement`, etc.
 
-## Tasks
-- [x] Update useAuth.js with login, refresh token, and logout functionality
-- [x] Update Header.jsx to display dynamic user information (name, user_type)
-- [x] Update authSlice.js with proper state management for tokens and user data
-- [x] Add authentication services to auth.js
-- [x] Integrate with API endpoints for login, refresh, and logout
-- [x] Fix dropdown menu click outside behavior
-- [x] Test the complete authentication flow
+### 2. Update Sidebar.jsx - Menu filtering
+- [x] Modify `getUserMenuItems` function to return all menu items without filtering by `allowedRoles`
+- [x] Remove the `showAccessDeniedMessage` for restricted user types
 
-# Logout Integration Task
+### 3. Update App.jsx - Route protection
+- [x] Modify `RoleBasedRoute` component to not check `allowedRoles`
+- [x] Ensure all routes are accessible to all authenticated users
 
-## Tasks
-- [x] Update useAuth.js to import and use the logout action from authSlice
-- [x] Add redirection to /login after logout
-- [x] Test the logout functionality
+### 4. Update Users.jsx
+- [x] Remove permission checks for `canAccessUserManagement()` and `canViewUsers()`
+- [x] Remove conditional rendering of Create User button based on `canCreateUsers()`
+- [x] Remove conditional rendering of Edit/Delete buttons based on `canManage`
 
-# Theme Toggle Fix Task
+### 5. Update CreateUser.jsx
+- [x] Remove local `canCreateUsers()` check and navigation
+- [x] Remove conditional rendering of user type options (show all options to all users)
+- [x] Remove access denied UI
 
-## Tasks
-- [x] Update ThemeToggle to use useTheme hook
-- [x] Update useTheme hook to apply theme to document
-- [x] Remove manual theme application from App.jsx
+### 6. Update EditUser.jsx
+- [x] Remove permission check for `canEditUsers()`
+- [x] Remove conditional rendering of user type options
+
+### 7. Update ViewUser.jsx
+- [x] Remove conditional rendering of Edit button based on `canEditUsers()`
+
+## Testing
+- [ ] Verify all users can access all menu items
+- [ ] Verify all users can access all routes
+- [ ] Verify all users can perform CRUD operations on users
+- [ ] Verify no 403 errors are shown
+
+## Notes
+- All changes preserve existing functionality while removing authorization barriers
+- UI elements that were conditionally hidden will now be visible to all users
+- API calls may still return 403 if backend has authorization, but frontend will not block access
+- Fixed OrganizationManagement component to handle different data structures and removed permission checks

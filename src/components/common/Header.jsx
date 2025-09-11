@@ -1,3 +1,4 @@
+// src/components/common/Header.jsx - Optimized without debug logs
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createPortal } from 'react-dom';
@@ -34,11 +35,11 @@ const ThemeToggle = () => {
       ) : (
         <Moon className="w-5 h-5 text-indigo-600 group-hover:scale-110 transition-transform" />
       )}
-      
+
       {/* Glow effect */}
       <div className={`absolute inset-0 rounded-2xl transition-opacity duration-300 ${
-        theme === 'dark' 
-          ? 'bg-yellow-400/20 group-hover:bg-yellow-400/30' 
+        theme === 'dark'
+          ? 'bg-yellow-400/20 group-hover:bg-yellow-400/30'
           : 'bg-indigo-400/20 group-hover:bg-indigo-400/30'
       } opacity-0 group-hover:opacity-100 blur-lg`}></div>
     </button>
@@ -48,6 +49,7 @@ const ThemeToggle = () => {
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
   const { logout } = useAuth();
+  const { theme } = useTheme();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -81,8 +83,13 @@ const Header = () => {
   }, [showUserMenu, showNotifications]);
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
+
 
   return (
     <div className="backdrop-blur-xl bg-white/10 light:bg-white/80 border-b border-white/20 light:border-gray-200/50 px-6 py-4 relative">
@@ -91,7 +98,7 @@ const Header = () => {
         <div className="absolute -top-4 -left-4 w-20 h-20 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 light:from-blue-400/10 light:to-cyan-400/10 rounded-full blur-xl animate-pulse"></div>
         <div className="absolute -top-2 right-20 w-16 h-16 bg-gradient-to-r from-purple-400/20 to-pink-400/20 light:from-purple-400/10 light:to-pink-400/10 rounded-full blur-xl animate-pulse delay-300"></div>
       </div>
-      
+
       <div className="flex items-center justify-between relative z-10">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-4">
@@ -111,7 +118,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-4">
           {/* Online Users Counter */}
           <div className="backdrop-blur-md bg-gradient-to-r from-green-500/20 to-emerald-500/20 light:from-green-500/10 light:to-emerald-500/10 border border-green-400/30 light:border-green-400/20 px-4 py-2 rounded-2xl shadow-xl">
@@ -128,7 +135,7 @@ const Header = () => {
 
           {/* Theme Toggle */}
           <ThemeToggle />
-          
+
           {/* Notifications */}
           <div className="relative" ref={notificationsRef}>
             <button
@@ -162,7 +169,7 @@ const Header = () => {
               </div>
             )}
           </div>
-          
+
           {/* User Menu */}
           <div className="relative" ref={userMenuRef}>
             <button
@@ -209,12 +216,8 @@ const Header = () => {
           </div>
         </div>
       </div>
-
-
     </div>
   );
 };
 
 export default Header;
-
-

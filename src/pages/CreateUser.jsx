@@ -45,16 +45,7 @@ const CreateUser = () => {
     }
   }, [error, dispatch]);
 
-  const canCreateUsers = () => {
-    return currentUser?.user_type === 'super_admin' || currentUser?.user_type === 'admin';
-  };
-
-  useEffect(() => {
-    if (!canCreateUsers()) {
-      toast.error('You do not have permission to create users');
-      navigate('/users');
-    }
-  }, [currentUser, navigate]);
+  // All users can create users - no permission check needed
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -75,19 +66,7 @@ const CreateUser = () => {
     }
   };
 
-  if (!canCreateUsers()) {
-    return (
-      <div className="flex items-center justify-center min-h-96">
-        <GlassCard>
-          <div className="text-center py-8">
-            <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Access Denied</h3>
-            <p className="text-white/60">You don't have permission to create users.</p>
-          </div>
-        </GlassCard>
-      </div>
-    );
-  }
+  // All users can create users - no access denied UI needed
 
   return (
     <div className="space-y-6">
@@ -243,12 +222,13 @@ const CreateUser = () => {
                 >
                   <option value="user">User</option>
                   <option value="manager">Manager</option>
-                  {currentUser?.user_type === 'super_admin' && (
-                    <>
-                      <option value="admin">Admin</option>
-                      <option value="super_admin">Super Admin</option>
-                    </>
-                  )}
+                  <option value="ktl_staff">KTL Staff</option>
+                  <option value="support_staff">Support Staff</option>
+                  <option value="field_staff">Field Staff</option>
+                  <option value="reseller_admin">Reseller Admin</option>
+                  <option value="sub_reseller_admin">Sub Reseller Admin</option>
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
                 </select>
                 {errors.user_type && (
                   <p className="text-red-300 text-sm mt-1">{errors.user_type.message}</p>

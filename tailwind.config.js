@@ -1,10 +1,11 @@
+// tailwind.config.js - Fixed configuration for proper light mode
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
+  darkMode: 'class', // This is crucial for theme switching
   theme: {
     extend: {
       colors: {
@@ -83,8 +84,8 @@ export default {
           'to': { opacity: '1', transform: 'translateY(0)' },
         },
         slideUp: {
-          'from': { transform: 'translateY(20px)', opacity: '0' },
-          'to': { transform: 'translateY(0)', opacity: '1' },
+          'from': { opacity: '0', transform: 'translateY(10px)' },
+          'to': { opacity: '1', transform: 'translateY(0)' },
         },
         fadeIn: {
           'from': { opacity: '0' },
@@ -92,22 +93,47 @@ export default {
         },
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
-        'glow-sm': '0 0 20px rgba(59, 130, 246, 0.3)',
-        'glow-md': '0 0 40px rgba(59, 130, 246, 0.4)',
-        'glow-lg': '0 0 60px rgba(59, 130, 246, 0.5)',
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+        'glow-lg': '0 0 30px rgba(59, 130, 246, 0.8)',
+        'inner-glow': 'inset 0 0 20px rgba(59, 130, 246, 0.2)',
       },
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/aspect-ratio'),
+    // Add any plugins you need
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.scrollbar-thin': {
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgb(31 41 55 / 0.3) transparent',
+        },
+        '.scrollbar-webkit': {
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgb(31 41 55 / 0.3)',
+            borderRadius: '20px',
+            border: '1px solid transparent',
+          },
+        },
+        '.text-shadow': {
+          textShadow: '0 2px 4px rgba(0,0,0,0.10)',
+        },
+        '.text-shadow-md': {
+          textShadow: '0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08)',
+        },
+        '.text-shadow-lg': {
+          textShadow: '0 15px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.07)',
+        },
+        '.text-shadow-none': {
+          textShadow: 'none',
+        },
+      }
+      addUtilities(newUtilities)
+    }
   ],
-};
+}

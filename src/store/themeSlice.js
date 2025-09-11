@@ -1,13 +1,32 @@
+// src/store/themeSlice.js - Production optimized without debug logs
 import { createSlice } from '@reduxjs/toolkit';
 
 const getInitialTheme = () => {
+  // Check localStorage first
   const savedTheme = localStorage.getItem('theme');
-  return savedTheme || 'dark';
+  if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+    return savedTheme;
+  }
+  
+  // Fall back to system preference
+  if (typeof window !== 'undefined') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  
+  // Default to dark
+  return 'dark';
+};
+
+const getSystemPreference = () => {
+  if (typeof window !== 'undefined') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return 'dark';
 };
 
 const initialState = {
   theme: getInitialTheme(),
-  systemPreference: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  systemPreference: getSystemPreference(),
 };
 
 const themeSlice = createSlice({
@@ -15,12 +34,26 @@ const themeSlice = createSlice({
   initialState,
   reducers: {
     toggleTheme: (state) => {
-      state.theme = state.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', state.theme);
+      const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+      state.theme = newTheme;
+      localStorage.setItem('theme', newTheme);
+      
+      // Only log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Theme toggled to:', newTheme);
+      }
     },
     setTheme: (state, action) => {
-      state.theme = action.payload;
-      localStorage.setItem('theme', state.theme);
+      const newTheme = action.payload;
+      if (newTheme === 'light' || newTheme === 'dark') {
+        state.theme = newTheme;
+        localStorage.setItem('theme', newTheme);
+        
+        // Only log in development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Theme set to:', newTheme);
+        }
+      }
     },
     setSystemPreference: (state, action) => {
       state.systemPreference = action.payload;
@@ -30,5 +63,3 @@ const themeSlice = createSlice({
 
 export const { toggleTheme, setTheme, setSystemPreference } = themeSlice.actions;
 export default themeSlice.reducer;
-
-

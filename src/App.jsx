@@ -98,14 +98,14 @@ const RouteWrapper = ({ children }) => {
 };
 
 // Main layout component with performance optimizations
-const Layout = React.memo(({ children }) => {
+const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900 light:from-gray-50 light:via-blue-50 light:to-indigo-100 relative overflow-hidden">
-      {/* Animated background elements - responsive to theme */}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900 light:from-gray-50 light:via-blue-50 light:to-indigo-50 relative overflow-hidden transition-all duration-300">
+      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 dark:bg-blue-400/10 light:bg-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
-        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-purple-400/10 dark:bg-purple-400/10 light:bg-purple-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-400/10 dark:bg-pink-400/10 light:bg-pink-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '0.5s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 dark:bg-blue-400/10 light:bg-blue-400/5 rounded-full blur-3xl animate-pulse transition-colors duration-300"></div>
+        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-purple-400/10 dark:bg-purple-400/10 light:bg-purple-400/5 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-300"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-pink-400/10 dark:bg-pink-400/10 light:bg-pink-400/5 rounded-full blur-3xl animate-pulse delay-500 transition-colors duration-300"></div>
       </div>
       
       <Header />
@@ -119,7 +119,9 @@ const Layout = React.memo(({ children }) => {
       </div>
     </div>
   );
-});
+};
+
+
 
 Layout.displayName = 'Layout';
 

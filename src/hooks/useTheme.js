@@ -1,4 +1,3 @@
-// src/hooks/useTheme.js - Production ready without debug logs
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleTheme, setTheme, setSystemPreference } from '../store/themeSlice';
 import { useEffect } from 'react';
@@ -8,24 +7,25 @@ export const useTheme = () => {
   const { theme, systemPreference } = useSelector((state) => state.theme);
 
   useEffect(() => {
-    // Apply theme to document root and body
-    const root = document.documentElement;
-    const body = document.body;
+    // Apply theme to document - properly manage classes
+    const htmlElement = document.documentElement;
     
-    // Remove all theme classes first
-    root.classList.remove('light', 'dark');
-    body.classList.remove('light', 'dark');
+    // Remove any existing theme classes
+    htmlElement.classList.remove('dark', 'light');
     
     // Add the current theme class
-    root.classList.add(theme);
-    body.classList.add(theme);
+    htmlElement.classList.add(theme);
     
-    // Also set data attribute for more specific targeting
-    root.setAttribute('data-theme', theme);
+    // Debug logging
+    console.log('Theme changed to:', theme);
+    console.log('HTML classes:', htmlElement.className);
     
-    // Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Theme applied:', theme);
+    // Also update body background dynamically for immediate visual feedback
+    const body = document.body;
+    if (theme === 'dark') {
+      body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    } else {
+      body.style.background = 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)';
     }
   }, [theme]);
 
@@ -36,27 +36,16 @@ export const useTheme = () => {
       dispatch(setSystemPreference(e.matches ? 'dark' : 'light'));
     };
 
-    // Set initial system preference
-    dispatch(setSystemPreference(mediaQuery.matches ? 'dark' : 'light'));
-
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [dispatch]);
 
   const toggle = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    // Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Toggling theme from', theme, 'to', newTheme);
-    }
+    console.log('Toggling theme from:', theme);
     dispatch(toggleTheme());
   };
 
   const setThemeMode = (newTheme) => {
-    // Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Setting theme to:', newTheme);
-    }
     dispatch(setTheme(newTheme));
   };
 
